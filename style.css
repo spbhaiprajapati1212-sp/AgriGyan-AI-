@@ -1,0 +1,144 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f7f0;
+    color: #1b3321;
+}
+
+header {
+    background: #166534;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin-bottom: 0;
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 15px;
+}
+
+section {
+    margin-bottom: 25px;
+}
+
+.search-section,
+.ai-section {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px #00000010;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #cbd5cb;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    background: #15803d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #14532d;
+}
+
+.crop-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(250px, 1fr)
+    );
+    gap: 15px;
+}
+
+.crop-card {
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    border-left: 5px solid #16a34a;
+    box-shadow: 0 3px 10px #00000010;
+}
+
+.crop-card h3 {
+    color: #166534;
+    margin-top: 0;
+}
+
+.crop-card p {
+    line-height: 1.6;
+}
+
+.botanical {
+    font-style: italic;
+    color: #64748b;
+}
+
+#chatBox {
+    background: #f8faf8;
+    border: 1px solid #dce7dc;
+    height: 300px;
+    overflow-y: auto;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.user-message {
+    background: #dcfce7;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    text-align: right;
+}
+
+.bot-message {
+    background: white;
+    border: 1px solid #dce7dc;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    white-space: pre-wrap;
+}
+
+footer {
+    background: #14532d;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 23px;
+    }
+
+    main {
+        padding: 10px;
+    }
+}
