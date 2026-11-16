@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agri Knowledge Hub</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>🌾 Agri Knowledge Hub</h1>
+    <p>कीट, रोग एवं उन्नत किस्में</p>
+</header>
+
+<main>
+
+    <section class="search-section">
+        <h2>फसल खोजें</h2>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="फसल का नाम, Botanical Name, रोग या कीट खोजें"
+        >
+
+        <select id="categoryFilter">
+            <option value="">सभी फसलें</option>
+            <option value="अनाज">अनाज</option>
+            <option value="दलहन">दलहन</option>
+            <option value="तिलहन">तिलहन</option>
+            <option value="सब्ज़ी">सब्ज़ियाँ</option>
+            <option value="फल">फल</option>
+            <option value="व्यावसायिक">व्यावसायिक फसलें</option>
+            <option value="मसाला">मसाला</option>
+        </select>
+    </section>
+
+    <section>
+        <h2>🌱 सभी फसलें</h2>
+        <div id="cropContainer" class="crop-grid"></div>
+    </section>
+
+    <section class="ai-section">
+        <h2>🤖 Agri AI Assistant</h2>
+
+        <p>
+            फसल के कीट, रोग और उन्नत किस्मों के बारे में AI से पूछें।
+        </p>
+
+        <div id="chatBox">
+            <div class="bot-message">
+                नमस्ते! मैं आपका Agriculture AI Assistant हूँ।
+                आप मुझसे कृषि से जुड़े सवाल पूछ सकते हैं।
+            </div>
+        </div>
+
+        <input
+            type="text"
+            id="userQuestion"
+            placeholder="जैसे गेहूँ में कौन-कौन से रोग होते हैं?"
+        >
+
+        <button id="askButton">AI से पूछें</button>
+    </section>
+
+</main>
+
+<footer>
+    <p>Agri Knowledge Hub © 2026</p>
+    <p>भारतीय एवं विश्व कृषि का संपूर्ण ज्ञान</p>
+</footer>
+
+<script src="crops.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
