@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const express = require("express");
@@ -8,44 +9,58 @@ const app = express();
 
 app.use(express.json({ limit: "15kb" }));
 
+// GitHub Pages वेबसाइट का Origin
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+].filter(Boolean);
+
 app.use(cors({
-    origin: ["https://YOUR-GITHUB-USERNAME.github.io"],
-    methods: ["POST"],
-    allowedHeaders: ["Content-Type", "x-groq-api-key"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"]
 }));
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 10,
-    message: { error: "बहुत अधिक सवाल भेजे गए। कृपया एक मिनट बाद प्रयास करें।" }
+    message: {
+        error: "बहुत अधिक सवाल भेजे गए। एक मिनट बाद प्रयास करें।"
+    }
 });
-
-app.use("/api/chat", limiter);
 
 app.get("/", (req, res) => {
     res.send("Agri Knowledge Hub AI Backend is running!");
 });
 
-app.post("/api/chat", async (req, res) => {
+app.get("/health", (req, res) => {
+    res.json({ status: "OK" });
+});
+
+app.post("/api/chat", limiter, async (req, res) => {
     try {
         const question = req.body.question;
-        
-        // **यहाँ आप अपनी Groq API Key सीधे नीचे लिख सकते हैं (या फ्रंटएंड से आने देगी)**
-        const ENTER_YOUR_GROQ_API_KEY = "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"; 
 
-        const userApiKey = req.headers["x-groq-api-key"];
-        const apiKey = userApiKey || process.env.GROQ_API_KEY || ENTER_YOUR_GROQ_API_KEY;
-
-        if (!question || typeof question !== "string") {
-            return res.status(400).json({ error: "कृपया सही कृषि सवाल लिखें।" });
+        if (!question || typeof question !== "string" || !question.trim()) {
+            return res.status(400).json({
+                error: "कृपया कृषि से संबंधित सवाल लिखें।"
+            });
         }
 
         if (question.length > 1500) {
-            return res.status(400).json({ error: "सवाल बहुत लंबा है।" });
+            return res.status(400).json({
+                error: "सवाल बहुत लंबा है।"
+            });
         }
 
-        if (!apiKey || apiKey.includes("xxxxxx")) {
-            return res.status(500).json({ error: "कृपया कोड में वैध Groq API Key दर्ज करें।" });
+        // API Key केवल Backend Environment से मिलेगी
+        const apiKey = process.env.GROQ_API_KEY;
+
+        if (!apiKey) {
+            return res.status(500).json({
+                error: "Backend में Groq API Key सेट नहीं है।"
+            });
         }
 
         const groqResponse = await fetch(
@@ -54,18 +69,18 @@ app.post("/api/chat", async (req, res) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + apiKey
+                    "Authorization": `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
                     model: "llama-3.3-70b-versatile",
                     messages: [
                         {
                             role: "system",
-                            content: `You are Agri Knowledge Hub Agriculture AI Assistant. Answer in Hindi.`
+                            content: "You are Agri Knowledge Hub Agriculture AI Assistant. Answer agricultural questions accurately in Hindi. Explain crop diseases, pests, fertilizers, irrigation and farming methods in simple language."
                         },
                         {
                             role: "user",
-                            content: question
+                            content: question.trim()
                         }
                     ],
                     temperature: 0.3,
@@ -77,23 +92,34 @@ app.post("/api/chat", async (req, res) => {
         const result = await groqResponse.json();
 
         if (!groqResponse.ok) {
-            return res.status(502).json({ error: result.error?.message || "AI सेवा से जवाब नहीं मिल पाया।" });
+            console.error("Groq API Error:", result);
+
+            return res.status(502).json({
+                error: result.error?.message || "Groq AI से जवाब नहीं मिला।"
+            });
         }
 
         const answer = result.choices?.[0]?.message?.content;
+
         if (!answer) {
-            return res.status(502).json({ error: "AI का जवाब खाली मिला।" });
+            return res.status(502).json({
+                error: "AI का जवाब खाली मिला।"
+            });
         }
 
-        res.json({ answer: answer });
+        return res.json({ answer });
 
     } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ error: "Backend में समस्या हुई।" });
+        console.error("Backend Error:", error);
+
+        return res.status(500).json({
+            error: "Backend में समस्या हुई। कृपया बाद में प्रयास करें।"
+        });
     }
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, "0.0.0.0", () => {
-    console.log("Agri Knowledge Hub Backend running on port " + PORT);
+    console.log(`Agri Knowledge Hub running on port ${PORT}`);
 });
